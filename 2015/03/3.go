@@ -6,34 +6,31 @@ import (
 	"os"
 )
 
-func main() {
-	input, err := os.Open("3.input.txt")
-
-	if err != nil {
-		panic("Unable to read input")
-	}
-
-	houses := make(map[[2]int]int)
-
-	defer input.Close()
-
+func calc(scanner *bufio.Scanner, giftersCount int) int {
 	housesVisited := 0
-	x, y := 0, 0
-	scanner := bufio.NewScanner(input)
+	houses := make(map[[2]int]int)
+	gifterPositions := make([][2]int, giftersCount)
+	currentGifter := 0
 
 	for scanner.Scan() {
 		for _, r := range scanner.Text() {
 			if r == '^' {
-				y++
+				gifterPositions[currentGifter][1]++
 			} else if r == 'v' {
-				y--
+				gifterPositions[currentGifter][1]--
 			} else if r == '<' {
-				x--
+				gifterPositions[currentGifter][0]--
 			} else if r == '>' {
-				x++
+				gifterPositions[currentGifter][0]++
 			}
 
-			houses[[2]int{x, y}]++
+			houses[[2]int{gifterPositions[currentGifter][0], gifterPositions[currentGifter][1]}]++
+
+			if currentGifter+1 == giftersCount {
+				currentGifter = 0
+			} else {
+				currentGifter++
+			}
 		}
 	}
 
@@ -43,5 +40,22 @@ func main() {
 		}
 	}
 
+	return housesVisited
+}
+
+func main() {
+	input, err := os.Open("3.input.txt")
+
+	if err != nil {
+		panic("Unable to read input")
+	}
+
+	defer input.Close()
+
+	housesVisited := calc(bufio.NewScanner(input), 1)
+	input.Seek(0, 0)
+	presentsGiven := calc(bufio.NewScanner(input), 2)
+
 	fmt.Println(housesVisited)
+	fmt.Println(presentsGiven)
 }
