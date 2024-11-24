@@ -39,6 +39,41 @@ func countNiceStrings(scanner *bufio.Scanner) int {
 	return niceStrings
 }
 
+func hasDoublePair(s string) bool {
+	for i := 0; i < len(s)-3; i++ {
+
+		if strings.Contains(s[i+2:], s[i:i+2]) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func hasRepeatingLetter(s string) bool {
+	for i := 0; i < len(s)-2; i++ {
+		if s[i] == s[i+2] {
+			return true
+		}
+	}
+
+	return false
+}
+
+func countNiceStringsNewRules(scanner *bufio.Scanner) int {
+	niceStrings := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if hasDoublePair(line) && hasRepeatingLetter(line) {
+			niceStrings++
+		}
+	}
+
+	return niceStrings
+}
+
 func main() {
 	input, err := os.Open("5.input.txt")
 
@@ -48,8 +83,7 @@ func main() {
 
 	defer input.Close()
 
-	scanner := bufio.NewScanner(input)
-	niceStrings := countNiceStrings(scanner)
-
-	fmt.Println(niceStrings)
+	fmt.Println(countNiceStrings(bufio.NewScanner(input)))
+	input.Seek(0, 0)
+	fmt.Println(countNiceStringsNewRules(bufio.NewScanner(input)))
 }
