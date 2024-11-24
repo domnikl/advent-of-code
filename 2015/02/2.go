@@ -9,9 +9,7 @@ import (
 func calc(scanner *bufio.Scanner) (int, int) {
 	wrappingPaper := 0
 	ribbonLength := 0
-	var l int
-	var w int
-	var h int
+	var l, w, h int
 
 	for scanner.Scan() {
 		fmt.Sscanf(scanner.Text(), "%dx%dx%d", &l, &w, &h)
@@ -48,7 +46,8 @@ func main() {
 
 	defer input.Close()
 
-	wrappingPaper, ribbon := calc(bufio.NewScanner(input))
+	scanner := bufio.NewScanner(input)
+	wrappingPaper, ribbon := calc(scanner)
 
 	fmt.Println(wrappingPaper)
 	fmt.Println(ribbon)
