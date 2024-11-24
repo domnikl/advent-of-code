@@ -6,8 +6,9 @@ import (
 	"os"
 )
 
-func calc(scanner *bufio.Scanner) int {
-	totalSize := 0
+func calc(scanner *bufio.Scanner) (int, int) {
+	wrappingPaper := 0
+	ribbonLength := 0
 	var l int
 	var w int
 	var h int
@@ -19,18 +20,23 @@ func calc(scanner *bufio.Scanner) int {
 		sideB := w * h
 		sideC := h * l
 
-		totalSize += 2*sideA + 2*sideB + 2*sideC
+		wrappingPaper += 2*sideA + 2*sideB + 2*sideC
 
-		if sideA <= sideB && sideA <= sideC {
-			totalSize += sideA
-		} else if sideB <= sideC && sideB <= sideA {
-			totalSize += sideB
-		} else {
-			totalSize += sideC
+		if sideA <= sideB && sideA <= sideC { // sideA is the smallest
+			wrappingPaper += sideA
+			ribbonLength += 2*l + 2*w
+		} else if sideB <= sideC && sideB <= sideA { // sideB is the smallest
+			wrappingPaper += sideB
+			ribbonLength += 2*w + 2*h
+		} else { // sideC is the smallest
+			wrappingPaper += sideC
+			ribbonLength += 2*h + 2*l
 		}
+
+		ribbonLength += l * w * h
 	}
 
-	return totalSize
+	return wrappingPaper, ribbonLength
 }
 
 func main() {
@@ -42,7 +48,8 @@ func main() {
 
 	defer input.Close()
 
-	totalSize := calc(bufio.NewScanner(input))
+	wrappingPaper, ribbon := calc(bufio.NewScanner(input))
 
-	fmt.Println(totalSize)
+	fmt.Println(wrappingPaper)
+	fmt.Println(ribbon)
 }
