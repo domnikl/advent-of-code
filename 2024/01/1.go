@@ -2,32 +2,27 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"math"
 	"os"
 	"sort"
 	"strconv"
 )
 
-func getInput() *os.File {
+func getInput() ([]int, []int) {
 	input, err := os.Open("1.input.txt")
 
 	if err != nil {
 		panic("Unable to read input")
 	}
 
-	return input
-}
-
-func main() {
-	input := getInput()
-
 	defer input.Close()
 
 	scanner := bufio.NewScanner(input)
 	scanner.Split(bufio.ScanWords)
 
-	listA := make([]int, 0)
-	listB := make([]int, 0)
+	left := make([]int, 0)
+	right := make([]int, 0)
 	i := 0
 
 	for scanner.Scan() {
@@ -38,26 +33,50 @@ func main() {
 		}
 
 		if i%2 == 0 {
-			listA = append(listA, value)
+			left = append(left, value)
 		} else {
-			listB = append(listB, value)
+			right = append(right, value)
 		}
 
 		i++
 	}
 
-	// sort both lists
-	sort.Sort(sort.IntSlice(listA))
-	sort.Sort(sort.IntSlice(listB))
+	return left, right
+}
+
+func part1(left, right []int) int {
+	sort.Sort(sort.IntSlice(left))
+	sort.Sort(sort.IntSlice(right))
 
 	total := 0.
 
-	for i := 0; i < len(listA); i++ {
-		a := listA[i]
-		b := listB[i]
+	for i := 0; i < len(left); i++ {
+		a := left[i]
+		b := right[i]
 
 		total += math.Abs(float64(a - b))
 	}
 
-	println(int(total))
+	return int(total)
+}
+
+func part2(left, right []int) int {
+	sum := 0
+
+	for i := 0; i < len(left); i++ {
+		for j := 0; j < len(right); j++ {
+			if left[i] == right[j] {
+				sum += left[i]
+			}
+		}
+	}
+
+	return sum
+}
+
+func main() {
+	left, right := getInput()
+
+	fmt.Println(part1(left, right))
+	fmt.Println(part2(left, right))
 }
